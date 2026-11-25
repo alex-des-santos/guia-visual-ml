@@ -90,3 +90,10 @@ Opção B – repositório com a pasta inteira (`videos/` + `site/`): o workflow
 
 O arquivo `site/.nojekyll` evita que o GitHub processe o site com Jekyll.
 
+
+## Métricas de acesso
+
+- O site carrega o Google Tag Manager com o container `GTM-NQ2Z5R9G`. O código fica em `site/index.html`, no começo do `<head>` (script) e logo depois de `<body>` (`<noscript>`). Para trocar o ID, mude os dois lugares.
+- O GTM sozinho não conta nada: a contagem só acontece se, dentro desse container, houver uma tag do **Google Analytics 4** (tag do Google com o ID de medição `G-…`, acionada em "All Pages") e a versão do container estiver **publicada** (botão "Enviar/Publicar" no GTM).
+- Para ver os números no GA4: **Relatórios > Aquisição** (ou **Engajamento > Páginas e telas**), escolha o período da atividade e adicione um filtro **Nome do host = alex-des-santos.github.io**. Use "Usuários" como estimativa de pessoas alcançadas.
+- O rodapé do site tem um aviso curto de privacidade. Se o GTM for bloqueado ou estiver offline, o site funciona normalmente, mas essa visita não é contada.
