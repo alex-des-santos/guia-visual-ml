@@ -1,0 +1,122 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 340px; font-weight: 900; font-size: 136px; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 510px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 60px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    .el { font-size: 48px; fill: #3a3d42; font-weight: 700; font-family: "Inter", sans-serif; }
+    .node { position: absolute; height: 96px; margin-top: -48px; border-radius: 18px; display: flex; align-items: center; justify-content: center; opacity: 0; white-space: nowrap; }
+    .q { width: 520px; margin-left: -260px; background: #ffffff; border: 4px solid #121417; font-weight: 700; font-size: 38px; }
+    .leaf { width: 260px; margin-left: -130px; background: #1f9d55; color: #fff; font-weight: 900; font-size: 42px; }
+    .leaf.neg { background: #d93636; }
+    #dt-labels { opacity: 0; }
+    #dt-card { position: absolute; left: 160px; top: 760px; width: 540px; padding: 26px 32px; background: #fff; border: 4px solid #e0640f; border-radius: 18px; opacity: 0; }
+    #dt-card .h { font-weight: 900; font-size: 44px; margin-bottom: 10px; }
+    #dt-card .l { font-weight: 400; font-size: 36px; line-height: 1.35; white-space: nowrap; }
+    #dt-card .m { font-weight: 900; color: #e0640f; opacity: 0; }
+    #dt-token { position: absolute; left: 0; top: 0; width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%; background: #e0640f; color: #fff; font-weight: 900; font-size: 40px; display: flex; align-items: center; justify-content: center; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="tree" data-width="1920" data-height="1080">
+    <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <g fill="none" stroke="#121417" stroke-width="5" stroke-linecap="round">
+        <path id="dt-e1" class="dt-e dt-ea" d="M760 338 L360 432" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+        <path id="dt-e2" class="dt-e dt-ea" d="M760 338 L1100 432" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+        <path id="dt-e3" class="dt-e dt-eb" d="M1100 528 L820 622" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+        <path id="dt-e4" class="dt-e dt-eb" d="M1100 528 L1380 622" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+        <path id="dt-e5" class="dt-e dt-ec" d="M1380 718 L1140 812" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+        <path id="dt-e6" class="dt-e dt-ec" d="M1380 718 L1620 812" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+      </g>
+      <g id="dt-labels">
+        <text class="el" x="530" y="380" text-anchor="end">sim</text>
+        <text class="el" x="960" y="380" text-anchor="start">não</text>
+        <text class="el" x="930" y="570" text-anchor="end">sim</text>
+        <text class="el" x="1270" y="570" text-anchor="start">não</text>
+        <text class="el" x="1230" y="760" text-anchor="end">sim</text>
+        <text class="el" x="1530" y="760" text-anchor="start">não</text>
+      </g>
+    </svg>
+    <div id="dt-n1" class="node q" style="left:760px; top:290px">Salário acima de R$ 5 mil?</div>
+    <div id="dt-n2" class="node leaf" style="left:360px; top:480px">Aprovado</div>
+    <div id="dt-n3" class="node q" style="left:1100px; top:480px">Tem fiador?</div>
+    <div id="dt-n4" class="node leaf" style="left:820px; top:670px">Aprovado</div>
+    <div id="dt-n5" class="node q" style="left:1380px; top:670px">Score acima de 700?</div>
+    <div id="dt-n6" class="node leaf" style="left:1140px; top:860px">Aprovado</div>
+    <div id="dt-n7" class="node leaf neg" style="left:1620px; top:860px">Negado</div>
+    <div id="dt-card">
+      <div class="h">Ana</div>
+      <div class="l">Salário: R$ 3 mil <span id="dt-m1" class="m">→ não</span></div>
+      <div class="l">Fiador: não tem <span id="dt-m2" class="m">→ não</span></div>
+      <div class="l">Score: 750 <span id="dt-m3" class="m">→ sim</span></div>
+    </div>
+    <div id="dt-token">A</div>
+    <div id="dt-title" class="title" data-split="dt">Árvore de Decisão</div>
+    <div id="dt-sub" class="sub" data-split="dt">Uma sequência de perguntas de sim ou não</div>
+    <div id="dt-c1" class="cap" data-split="dt">Pedido de empréstimo: o banco faz perguntas</div>
+    <div id="dt-c2" class="cap" data-split="dt">As perguntas foram aprendidas com pedidos antigos</div>
+    <div id="dt-c3" class="cap" data-split="dt">Ana pede um empréstimo. Vamos seguir a árvore</div>
+    <div id="dt-c4" class="cap" data-split="dt">Árvore de Decisão: dá para ver o porquê</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="dt"]').forEach(function (el) {
+        el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+      });
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.07 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+      var pop = function (sel, at) { return F(sel, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)", stagger: 0.12 }, at); };
+      var draw = function (sel, at) { return F(sel, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, at); };
+      var hot = function (sel, at) { return F(sel, { stroke: "#121417", strokeWidth: 5 }, { stroke: "#e0640f", strokeWidth: 9, duration: 0.3, ease: "power2.out" }, at); };
+      var lit = function (sel, at) { return F(sel, { borderColor: "#121417", backgroundColor: "#ffffff" }, { borderColor: "#e0640f", backgroundColor: "#fde6d4", duration: 0.3, ease: "power2.out" }, at); };
+      var mark = function (sel, at) { return F(sel, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, at); };
+      var move = function (from, to, at) { return F("#dt-token", { x: from[0], y: from[1] }, { x: to[0], y: to[1], duration: 0.8, ease: "power3.inOut" }, at); };
+
+      inW("#dt-title", 0.15);
+      inW("#dt-sub", 0.7);
+      out("#dt-title, #dt-sub", 3.0);
+
+      inW("#dt-c1", 3.3);
+      pop("#dt-n1", 3.6);
+      draw(".dt-ea", 4.2);
+      pop("#dt-n2, #dt-n3", 4.7);
+      draw(".dt-eb", 5.4);
+      pop("#dt-n4, #dt-n5", 5.9);
+      draw(".dt-ec", 6.6);
+      pop("#dt-n6, #dt-n7", 7.1);
+      F("#dt-labels", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 7.6);
+      out("#dt-c1", 8.6);
+
+      inW("#dt-c2", 8.8);
+      out("#dt-c2", 12.0);
+
+      inW("#dt-c3", 12.2);
+      F("#dt-card", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 12.5);
+      var p0 = [700, 760], p1 = [490, 242], p2 = [830, 432], p3 = [1110, 622], p4 = [1000, 812];
+      F("#dt-token", { opacity: 0, scale: 0.3, x: p0[0], y: p0[1] }, { opacity: 1, scale: 1, x: p0[0], y: p0[1], duration: 0.4, ease: "back.out(2)" }, 13.2);
+      move(p0, p1, 13.8);
+      lit("#dt-n1", 14.5);
+      mark("#dt-m1", 14.7);
+      hot("#dt-e2", 15.3);
+      move(p1, p2, 15.3);
+      lit("#dt-n3", 16.1);
+      mark("#dt-m2", 16.3);
+      hot("#dt-e4", 16.8);
+      move(p2, p3, 16.8);
+      lit("#dt-n5", 17.6);
+      mark("#dt-m3", 17.8);
+      hot("#dt-e5", 18.3);
+      move(p3, p4, 18.3);
+      F("#dt-n6", { scale: 1 }, { scale: 1.14, duration: 0.25, ease: "power2.out" }, 19.1);
+      F("#dt-n6", { scale: 1.14 }, { scale: 1, duration: 0.4, ease: "power2.inOut" }, 19.35);
+      out("#dt-c3", 19.6);
+
+      inW("#dt-c4", 19.8);
+      window.__timelines["tree"] = tl;
+    })();
+  </script>
+</template>
+
+

@@ -1,0 +1,91 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 270px; font-weight: 900; font-size: 140px; line-height: 1.02; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 590px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 60px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    .box { position: absolute; width: 420px; height: 120px; margin: -60px 0 0 -210px; border-radius: 18px; background: #fff; border: 4px solid #121417; opacity: 0; }
+    .box span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 44px; white-space: nowrap; }
+    .b2 { opacity: 0; }
+    .ex { position: absolute; width: 240px; height: 80px; margin: -40px 0 0 -120px; border-radius: 14px; background: #ffffff; color: #121417; font-weight: 900; font-size: 42px; display: flex; align-items: center; justify-content: center; opacity: 0; }
+    .pc { font-size: 38px; font-weight: 700; fill: #121417; font-family: "Inter", sans-serif; }
+    #ab-pc, #ab-arr { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="abertura" data-width="1920" data-height="1080">
+    <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <g id="ab-arr" fill="none" stroke="#121417" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M610 470 Q700 470 780 530 M755 505 L782 532 L748 540" />
+        <path d="M610 650 Q700 650 780 590 M748 580 L782 588 L755 615" />
+        <path d="M1140 560 H1290 M1266 536 L1292 560 L1266 584" />
+      </g>
+      <g id="ab-pc">
+        <rect x="800" y="430" width="320" height="210" rx="16" fill="#121417" />
+        <rect x="818" y="448" width="284" height="174" rx="8" fill="#2f6fed" />
+        <rect x="930" y="640" width="60" height="40" fill="#121417" />
+        <rect x="870" y="676" width="180" height="16" rx="8" fill="#121417" />
+        <text class="pc" x="960" y="746" text-anchor="middle">Computador</text>
+      </g>
+    </svg>
+    <div id="ab-in1" class="box" style="left:390px; top:470px"><span class="b1">Regras</span><span class="b2">Exemplos</span></div>
+    <div id="ab-in2" class="box" style="left:390px; top:650px"><span class="b1">Dados</span><span class="b2">Respostas certas</span></div>
+    <div id="ab-out" class="box" style="left:1510px; top:560px"><span class="b1">Respostas</span><span class="b2">Regras</span></div>
+    <div id="ab-x0" class="ex" style="left:960px; top:535px">gato</div>
+    <div id="ab-x1" class="ex" style="left:960px; top:535px">cachorro</div>
+    <div id="ab-x2" class="ex" style="left:960px; top:535px">gato</div>
+    <div id="ab-x3" class="ex" style="left:960px; top:535px">cachorro</div>
+    <div id="ab-title" class="title" data-split="ab">O que é<br>Machine Learning?</div>
+    <div id="ab-sub" class="sub" data-split="ab">Aprendizado de máquina, explicado sem fórmulas</div>
+    <div id="ab-c1" class="cap" data-split="ab">Programa comum: uma pessoa escreve as regras</div>
+    <div id="ab-c2" class="cap" data-split="ab">Machine Learning: o computador descobre as regras</div>
+    <div id="ab-c3" class="cap" data-split="ab">Ele aprende com exemplos, como a gente</div>
+    <div id="ab-c4" class="cap" data-split="ab">A seguir: 7 jeitos de uma máquina aprender</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="ab"]').forEach(function (el) {
+        el.innerHTML = el.innerHTML.trim().split("<br>").map(function (line) {
+          return line.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+        }).join("<br>");
+      });
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.09 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+      var pop = function (sel, at) { return F(sel, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)", stagger: 0.2 }, at); };
+
+      inW("#ab-title", 0.15);
+      inW("#ab-sub", 0.9);
+      out("#ab-title, #ab-sub", 3.4);
+
+      inW("#ab-c1", 3.7);
+      pop("#ab-in1, #ab-in2", 4.0);
+      F("#ab-pc", { opacity: 0, scale: 0.85, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, 4.5);
+      F("#ab-arr", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 4.9);
+      pop("#ab-out", 5.4);
+      out("#ab-c1", 8.2);
+
+      inW("#ab-c2", 8.4);
+      F(".b1", { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in", stagger: 0.15 }, 9.0);
+      F(".b2", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", stagger: 0.15 }, 9.25);
+      F("#ab-out", { backgroundColor: "#ffffff", borderColor: "#121417", color: "#121417" }, { backgroundColor: "#e0640f", borderColor: "#e0640f", color: "#ffffff", duration: 0.4, ease: "power2.inOut" }, 9.8);
+      out("#ab-c2", 12.0);
+
+      inW("#ab-c3", 12.2);
+      // Os exemplos aparecem um a um na tela do computador (nunca sobre as setas).
+      for (var i = 0; i < 4; i++) {
+        var t0 = 12.7 + i * 0.6;
+        F("#ab-x" + i, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(1.8)" }, t0);
+        if (i < 3) F("#ab-x" + i, { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.85, duration: 0.15, ease: "power2.in" }, t0 + 0.45);
+      }
+      F("#ab-x3", { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power2.in" }, 15.2);
+      out("#ab-c3", 15.4);
+
+      inW("#ab-c4", 15.6);
+      window.__timelines["abertura"] = tl;
+    })();
+  </script>
+</template>
+
+

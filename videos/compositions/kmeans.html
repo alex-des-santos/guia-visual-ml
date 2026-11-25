@@ -1,0 +1,140 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 340px; font-weight: 900; font-size: 136px; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 510px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 60px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    .axl { font-size: 52px; fill: #121417; font-weight: 700; font-family: "Inter", sans-serif; }
+    .glab { font-size: 48px; font-weight: 900; font-family: "Inter", sans-serif; paint-order: stroke; stroke: #f6f4ef; stroke-width: 12px; stroke-linejoin: round; }
+    #km-axl { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="kmeans" data-width="1920" data-height="1080">
+    <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <path id="km-axes" d="M260 280 V920 H1720" fill="none" stroke="#121417" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+      <g id="km-axl">
+        <text class="axl" x="1720" y="992" text-anchor="end">Compras por mês →</text>
+        <text class="axl" x="282" y="256">Valor gasto por compra ↑</text>
+      </g>
+      <g id="km-pts"></g>
+      <g id="km-cents"></g>
+      <g id="km-labs"></g>
+    </svg>
+    <div id="km-title" class="title" data-split="km">K-Means</div>
+    <div id="km-sub" class="sub" data-split="km">Encontrar grupos sozinho, sem ninguém dizer quais são</div>
+    <div id="km-c1" class="cap" data-split="km">Clientes de uma loja, sem nenhum rótulo</div>
+    <div id="km-c2" class="cap" data-split="km">Escolhemos 3 centros em lugares quaisquer</div>
+    <div id="km-c3" class="cap" data-split="km">Cada cliente entra no grupo do centro mais perto</div>
+    <div id="km-c4" class="cap" data-split="km">Cada centro anda para o meio do seu grupo</div>
+    <div id="km-c5" class="cap" data-split="km">Repete até parar de mudar: 3 grupos de clientes</div>
+    <div id="km-c6" class="cap" data-split="km">K-Means: ninguém disse antes quais eram os grupos</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="km"]').forEach(function (el) {
+        el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+      });
+      var NS = "http://www.w3.org/2000/svg";
+      var GREY = "#a3a7ad", COLS = ["#2f6fed", "#e0640f", "#1f9d55"];
+      var off = [[0, 0], [70, -45], [-80, 35], [45, 80], [-55, -70], [120, 15], [-115, -20], [25, -110], [-25, 115], [100, 85]];
+      var groups = [{ c: [1380, 420], name: "VIPs", m: [1, 1] }, { c: [1300, 780], name: "Fiéis", m: [-1, 0.7] }, { c: [620, 620], name: "Ocasionais", m: [0.9, -1] }];
+      var pts = [];
+      groups.forEach(function (g) { off.forEach(function (o) { pts.push([g.c[0] + o[0] * g.m[0], g.c[1] + o[1] * g.m[1]]); }); });
+      var cents = [[900, 360], [820, 860], [430, 430]];
+      var near = function (p, cs) { var b = 0, bd = 1e9; cs.forEach(function (c, k) { var d = (p[0] - c[0]) * (p[0] - c[0]) + (p[1] - c[1]) * (p[1] - c[1]); if (d < bd) { bd = d; b = k; } }); return b; };
+      var steps = [];
+      var cs = cents.map(function (c) { return c.slice(); });
+      for (var it = 0; it < 3; it++) {
+        var asg = pts.map(function (p) { return near(p, cs); });
+        var nc = cs.map(function (c, k) {
+          var sx = 0, sy = 0, n = 0;
+          pts.forEach(function (p, i) { if (asg[i] === k) { sx += p[0]; sy += p[1]; n++; } });
+          return n ? [sx / n, sy / n] : c.slice();
+        });
+        steps.push({ asg: asg, from: cs, to: nc });
+        cs = nc;
+      }
+      var gp = document.getElementById("km-pts");
+      pts.forEach(function (p, i) {
+        var c = document.createElementNS(NS, "circle");
+        c.setAttribute("id", "km-p" + i); c.setAttribute("class", "km-p");
+        c.setAttribute("cx", p[0]); c.setAttribute("cy", p[1]); c.setAttribute("r", 17);
+        c.setAttribute("style", "fill:" + GREY + "; opacity:0");
+        gp.appendChild(c);
+      });
+      var gc = document.getElementById("km-cents");
+      cents.forEach(function (c, k) {
+        var g = document.createElementNS(NS, "g");
+        g.setAttribute("id", "km-k" + k); g.setAttribute("class", "km-k"); g.setAttribute("opacity", "0");
+        g.innerHTML = '<circle r="30" fill="#fff" stroke="' + COLS[k] + '" stroke-width="10" /><path d="M-12 -12 L12 12 M12 -12 L-12 12" stroke="' + COLS[k] + '" stroke-width="7" stroke-linecap="round" />';
+        gc.appendChild(g);
+      });
+      var gl = document.getElementById("km-labs");
+      cs.forEach(function (c, k) {
+        var gi = 0, bd = 1e9;
+        groups.forEach(function (g, j) { var d = Math.pow(g.c[0] - c[0], 2) + Math.pow(g.c[1] - c[1], 2); if (d < bd) { bd = d; gi = j; } });
+        var t = document.createElementNS(NS, "text");
+        t.setAttribute("id", "km-l" + k); t.setAttribute("class", "glab km-l");
+        t.setAttribute("x", c[0] + (gi === 1 ? 250 : 0)); t.setAttribute("y", c[1] + (gi === 1 ? 16 : -150));
+        t.setAttribute("text-anchor", "middle"); t.setAttribute("fill", COLS[k]); t.setAttribute("opacity", "0");
+        t.textContent = groups[gi].name;
+        gl.appendChild(t);
+      });
+
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.07 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+      var prev = pts.map(function () { return GREY; });
+      var assign = function (s, at) {
+        s.asg.forEach(function (k, i) {
+          F("#km-p" + i, { fill: prev[i] }, { fill: COLS[k], duration: 0.3, ease: "power1.out" }, at + i * 0.025);
+          prev[i] = COLS[k];
+        });
+      };
+      var moveC = function (s, at) {
+        s.from.forEach(function (c, k) {
+          F("#km-k" + k, { x: c[0], y: c[1] }, { x: s.to[k][0], y: s.to[k][1], duration: 0.9, ease: "power2.inOut" }, at);
+        });
+      };
+
+      inW("#km-title", 0.15);
+      inW("#km-sub", 0.7);
+      out("#km-title, #km-sub", 3.0);
+
+      inW("#km-c1", 3.3);
+      F("#km-axes", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 3.4);
+      F("#km-axl", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 4.0);
+      F(".km-p", { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.04 }, 4.3);
+      out("#km-c1", 7.0);
+
+      inW("#km-c2", 7.2);
+      cents.forEach(function (c, k) {
+        F("#km-k" + k, { opacity: 0, scale: 0.2, x: c[0], y: c[1] }, { opacity: 1, scale: 1, x: c[0], y: c[1], duration: 0.5, ease: "back.out(2)" }, 7.6 + k * 0.2);
+      });
+      out("#km-c2", 9.4);
+
+      inW("#km-c3", 9.6);
+      assign(steps[0], 10.1);
+      out("#km-c3", 12.3);
+
+      inW("#km-c4", 12.5);
+      moveC(steps[0], 12.9);
+      assign(steps[1], 14.0);
+      moveC(steps[1], 14.9);
+      assign(steps[2], 15.9);
+      moveC(steps[2], 16.6);
+      out("#km-c4", 17.6);
+
+      inW("#km-c5", 17.8);
+      F(".km-l", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out", stagger: 0.2 }, 18.4);
+      out("#km-c5", 20.6);
+
+      inW("#km-c6", 20.8);
+      window.__timelines["kmeans"] = tl;
+    })();
+  </script>
+</template>
+
+

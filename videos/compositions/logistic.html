@@ -1,0 +1,122 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 340px; font-weight: 900; font-size: 136px; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 510px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 60px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    .tick { font-size: 50px; font-weight: 700; fill: #3a3d42; font-family: "Inter", sans-serif; }
+    .axl { font-size: 52px; fill: #121417; font-weight: 700; font-family: "Inter", sans-serif; }
+    #lg-rows, #lg-pct, #lg-half, #lg-a, #lg-b, #lg-va, #lg-vb, #lg-da, #lg-db, #lg-ra, #lg-rb { opacity: 0; }
+    .read { position: absolute; white-space: nowrap; }
+    .read b { display: block; font-weight: 900; font-size: 72px; letter-spacing: -0.02em; line-height: 1; }
+    .read span { display: block; font-weight: 700; font-size: 44px; margin-top: 10px; }
+    #lg-ra { left: 1120px; top: 590px; }
+    #lg-ra b { color: #d93636; }
+    #lg-rb { left: 340px; top: 380px; }
+    #lg-rb b { color: #1f9d55; }
+  </style>
+  <div id="root" data-composition-id="logistic" data-width="1920" data-height="1080">
+    <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <path id="lg-axes" d="M300 280 V900 H1720" fill="none" stroke="#121417" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+      <g id="lg-rows">
+        <text class="axl" x="330" y="340" fill="#d93636">Spam</text>
+        <text class="axl" x="1350" y="873">Não é spam</text>
+        <text class="tick" x="300" y="958" text-anchor="middle">0</text>
+        <text class="tick" x="1000" y="958" text-anchor="middle">5</text>
+        <text class="tick" x="1700" y="958" text-anchor="middle">10</text>
+        <text class="axl" x="1720" y="1014" text-anchor="end">Palavras suspeitas no e-mail →</text>
+      </g>
+      <g id="lg-pct">
+        <text class="tick" x="280" y="338" text-anchor="end">100%</text>
+        <text class="tick" x="280" y="608" text-anchor="end">50%</text>
+        <text class="tick" x="280" y="878" text-anchor="end">0%</text>
+      </g>
+      <line id="lg-half" x1="300" y1="590" x2="1720" y2="590" stroke="#5b5f66" stroke-width="3" stroke-dasharray="10 10" />
+      <path id="lg-curve" d="" fill="none" stroke="#2f6fed" stroke-width="8" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+      <g id="lg-mails"></g>
+      <line id="lg-va" x1="1280" y1="918" x2="1280" y2="337" stroke="#e0640f" stroke-width="4" stroke-dasharray="12 10" />
+      <circle id="lg-da" cx="1280" cy="337" r="13" fill="#e0640f" />
+      <line id="lg-vb" x1="510" y1="918" x2="510" y2="856" stroke="#e0640f" stroke-width="4" stroke-dasharray="12 10" />
+      <circle id="lg-db" cx="510" cy="856" r="13" fill="#e0640f" />
+      <g transform="translate(1280 945)"><g id="lg-a"><rect x="-32" y="-22" width="64" height="44" rx="5" fill="#e0640f" /><path d="M-30 -20 L0 4 L30 -20" fill="none" stroke="#fff" stroke-width="4" /></g></g>
+      <g transform="translate(510 945)"><g id="lg-b"><rect x="-32" y="-22" width="64" height="44" rx="5" fill="#e0640f" /><path d="M-30 -20 L0 4 L30 -20" fill="none" stroke="#fff" stroke-width="4" /></g></g>
+    </svg>
+    <div id="lg-ra" class="read"><b>97% de chance</b><span>vai para o spam</span></div>
+    <div id="lg-rb" class="read"><b>1% de chance</b><span>vai para a caixa de entrada</span></div>
+    <div id="lg-title" class="title" data-split="lg">Regressão Logística</div>
+    <div id="lg-sub" class="sub" data-split="lg">Responder sim ou não, com uma chance</div>
+    <div id="lg-c1" class="cap" data-split="lg">E-mails antigos: já sabemos quais eram spam</div>
+    <div id="lg-c2" class="cap" data-split="lg">Ela desenha uma curva em S entre os dois</div>
+    <div id="lg-c3" class="cap" data-split="lg">E-mail novo com 7 palavras suspeitas</div>
+    <div id="lg-c4" class="cap" data-split="lg">E um e-mail com só 1 palavra suspeita?</div>
+    <div id="lg-c5" class="cap" data-split="lg">Regressão Logística: a chance de ser sim ou não</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="lg"]').forEach(function (el) {
+        el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+      });
+      var NS = "http://www.w3.org/2000/svg";
+      var X = function (v) { return 300 + v * 140; };
+      var Y = function (p) { return 860 - p * 540; };
+      var sig = function (v) { return 1 / (1 + Math.exp(-(v - 4.7) * 1.5)); };
+      var d = "";
+      for (var i = 0; i <= 100; i++) { var v = i / 10; d += (i ? " L" : "M") + X(v).toFixed(1) + " " + Y(sig(v)).toFixed(1); }
+      document.getElementById("lg-curve").setAttribute("d", d);
+      var mails = [[0.4, 0], [0.9, 0], [2.2, 0], [2.8, 0], [3.5, 0], [4.1, 0], [5.0, 0], [4.3, 1], [5.5, 1], [6.2, 1], [7.8, 1], [8.5, 1], [9.2, 1], [9.7, 1]];
+      var g = document.getElementById("lg-mails");
+      mails.forEach(function (m, i) {
+        var outer = document.createElementNS(NS, "g");
+        outer.setAttribute("transform", "translate(" + X(m[0]) + " " + Y(m[1]) + ")");
+        var col = m[1] ? "#d93636" : "#1f9d55";
+        outer.innerHTML = '<g class="lg-m" id="lg-m' + i + '" opacity="0"><rect x="-28" y="-20" width="56" height="40" rx="5" fill="' + col + '" /><path d="M-26 -18 L0 3 L26 -18" fill="none" stroke="#fff" stroke-width="4" /></g>';
+        g.appendChild(outer);
+      });
+
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.07 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+      var fade = function (sel, at, dur) { return F(sel, { opacity: 0 }, { opacity: 1, duration: dur || 0.3, ease: "power1.out" }, at); };
+
+      inW("#lg-title", 0.15);
+      inW("#lg-sub", 0.7);
+      out("#lg-title, #lg-sub", 3.0);
+
+      inW("#lg-c1", 3.3);
+      F("#lg-axes", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 3.4);
+      fade("#lg-rows", 4.0);
+      F(".lg-m", { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)", stagger: 0.12 }, 4.4);
+      out("#lg-c1", 7.4);
+
+      inW("#lg-c2", 7.6);
+      F("#lg-curve", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 7.9);
+      fade("#lg-pct", 8.3);
+      fade("#lg-half", 9.8, 0.4);
+      out("#lg-c2", 11.0);
+
+      inW("#lg-c3", 11.2);
+      F("#lg-a", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 11.6);
+      F("#lg-va", { opacity: 0, attr: { y2: 918 } }, { opacity: 1, attr: { y2: 337 }, duration: 0.8, ease: "power2.inOut" }, 12.3);
+      F("#lg-da", { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 13.1);
+      F("#lg-ra", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 13.4);
+      out("#lg-c3, #lg-ra", 15.6);
+
+      inW("#lg-c4", 15.8);
+      F("#lg-b", { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 16.3);
+      F("#lg-vb", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 16.8);
+      F("#lg-db", { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 17.0);
+      F("#lg-rb", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 17.3);
+      out("#lg-c4", 19.6);
+
+      inW("#lg-c5", 19.8);
+      window.__timelines["logistic"] = tl;
+    })();
+  </script>
+</template>
+
+
+
+

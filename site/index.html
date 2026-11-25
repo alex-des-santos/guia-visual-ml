@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O que é Machine Learning? – Guia visual</title>
+    <meta name="description" content="Machine Learning explicado de forma simples, com vídeos curtos e exemplos do dia a dia. Atividade extensionista – ADS, Centro Universitário Sumaré.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a class="logo" href="#inicio">🤖 Machine Learning</a>
+            <ul class="nav-links">
+                <li><a href="#o-que-e">O que é?</a></li>
+                <li><a href="#linear-regression">Linear</a></li>
+                <li><a href="#logistic-regression">Logística</a></li>
+                <li><a href="#decision-tree">Árvore</a></li>
+                <li><a href="#kmeans">K-Means</a></li>
+                <li><a href="#neural-network">Rede Neural</a></li>
+                <li><a href="#random-forest">Random Forest</a></li>
+                <li><a href="#gradient-boosting">Boosting</a></li>
+                <li><a href="#comparison">Comparar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <h1>O que é Machine Learning?</h1>
+            <p>Machine Learning (aprendizado de máquina) é quando o computador aprende com exemplos, em vez de alguém escrever todas as regras. Veja 7 jeitos de uma máquina aprender, cada um com um vídeo curto e um exemplo do dia a dia.</p>
+            <a href="#o-que-e" class="cta-button">Começar</a>
+        </section>
+
+        <section id="o-que-e" class="card intro">
+            <div class="card-header">
+                <h2>Primeiro: a ideia</h2>
+            </div>
+            <video class="clip" controls playsinline muted preload="none" poster="videos/00-abertura.jpg">
+                <source src="videos/00-abertura.mp4" type="video/mp4">
+                Seu navegador não consegue tocar este vídeo.
+            </video>
+            <div class="text">
+                <p><strong>Programa comum:</strong> uma pessoa escreve as regras ("se a mensagem tem tal palavra, é spam").</p>
+                <p><strong>Machine Learning:</strong> a gente mostra muitos exemplos com a resposta certa, e o computador descobre as regras sozinho. Depois usa o que aprendeu em casos novos.</p>
+                <div class="glossary">
+                    <p><strong>Com gabarito (supervisionado):</strong> os exemplos já vêm com a resposta. Ex.: fotos marcadas como "gato" ou "cachorro".</p>
+                    <p><strong>Sem gabarito (não supervisionado):</strong> ninguém diz a resposta; o computador procura padrões sozinho. Ex.: separar clientes em grupos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="algorithms" class="algorithms-section">
+            <h2>Os 7 algoritmos</h2>
+
+            <article class="card" id="linear-regression">
+                <div class="card-header">
+                    <h3>📈 Regressão Linear</h3>
+                    <span class="tag">Com gabarito · prevê um número</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/01-regressao-linear.jpg">
+                    <source src="videos/01-regressao-linear.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Desenha a linha reta que passa mais perto de todos os pontos. Com essa linha, dá para prever um número.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Preço de casa:</strong> olhando casas já vendidas (tamanho e preço), a linha mostra que casa maior custa mais. Uma casa nova de 85 m² sairia por cerca de R$ 320 mil.</p>
+                    <h4>Onde aparece</h4>
+                    <ul>
+                        <li>Prever vendas do mês, temperatura, consumo de energia</li>
+                        <li>Quando um valor sobe ou desce junto com outro</li>
+                    </ul>
+                    <h4>Cuidado</h4>
+                    <ul>
+                        <li>Só funciona bem se a relação for parecida com uma reta</li>
+                        <li>Um ponto muito fora do padrão pode entortar a linha</li>
+                    </ul>
+                </div>
+                <details class="play">
+                    <summary>Experimente: gerar novos dados</summary>
+                    <div class="visualization">
+                        <canvas id="linearRegressionChart" width="400" height="300"></canvas>
+                        <button type="button" onclick="generateLinearRegressionData()">Gerar novos dados</button>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card" id="logistic-regression">
+                <div class="card-header">
+                    <h3>📊 Regressão Logística</h3>
+                    <span class="tag">Com gabarito · responde sim ou não</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/02-regressao-logistica.jpg">
+                    <source src="videos/02-regressao-logistica.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Usa uma curva em forma de S para dar a <strong>chance</strong> de algo ser "sim". Acima de 50%, a resposta é sim.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Spam ou não spam:</strong> um e-mail com muitas palavras suspeitas ("GRÁTIS", "PRÊMIO") tem 97% de chance de ser spam. Com só uma, a chance é de 1% e ele vai para a caixa de entrada.</p>
+                    <h4>Onde aparece</h4>
+                    <ul>
+                        <li>Filtro de spam, aprovado ou reprovado, compra ou não compra</li>
+                        <li>Quando além da resposta você quer saber a chance</li>
+                    </ul>
+                </div>
+                <details class="play">
+                    <summary>Experimente: gerar novos dados</summary>
+                    <div class="visualization">
+                        <canvas id="logisticRegressionChart" width="400" height="300"></canvas>
+                        <button type="button" onclick="generateLogisticRegressionData()">Gerar novos dados</button>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card" id="decision-tree">
+                <div class="card-header">
+                    <h3>🌳 Árvore de Decisão</h3>
+                    <span class="tag">Com gabarito · perguntas de sim ou não</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/03-arvore-de-decisao.jpg">
+                    <source src="videos/03-arvore-de-decisao.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Faz uma pergunta de cada vez, como um fluxograma, até chegar a uma decisão. As perguntas são aprendidas com casos antigos.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Pedido de empréstimo:</strong></p>
+                    <ul>
+                        <li>Salário acima de R$ 5 mil? Se sim: aprovado</li>
+                        <li>Se não: tem fiador? Se sim: aprovado</li>
+                        <li>Se não: score acima de 700? Se sim: aprovado. Se não: negado</li>
+                    </ul>
+                    <p>No vídeo, a Ana ganha R$ 3 mil e não tem fiador, mas tem score 750: aprovada.</p>
+                    <h4>Por que é útil</h4>
+                    <ul>
+                        <li>Dá para mostrar o porquê de cada decisão</li>
+                    </ul>
+                </div>
+                <details class="play">
+                    <summary>Experimente: gerar outra árvore</summary>
+                    <div class="visualization">
+                        <div id="decisionTreeViz"></div>
+                        <button type="button" onclick="generateDecisionTree()">Gerar nova árvore</button>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card" id="kmeans">
+                <div class="card-header">
+                    <h3>🎯 K-Means</h3>
+                    <span class="tag">Sem gabarito · forma grupos</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/04-k-means.jpg">
+                    <source src="videos/04-k-means.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Junta coisas parecidas em grupos. Escolhe alguns centros, coloca cada ponto no centro mais perto, move os centros para o meio dos grupos e repete até parar de mudar.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Clientes de uma loja</strong>, separados pelo jeito de comprar:</p>
+                    <ul>
+                        <li>VIPs: compram muito e gastam bastante</li>
+                        <li>Fiéis: compram sempre, mas gastam pouco</li>
+                        <li>Ocasionais: aparecem de vez em quando</li>
+                    </ul>
+                    <p>Ninguém disse antes quais eram os grupos: o algoritmo achou sozinho.</p>
+                </div>
+                <details class="play">
+                    <summary>Experimente: mudar o número de grupos</summary>
+                    <div class="visualization">
+                        <canvas id="kmeansChart" width="400" height="300"></canvas>
+                        <div class="controls">
+                            <label>Número de grupos: <input type="range" id="clustersSlider" min="2" max="6" value="3" onchange="updateKMeans()"></label>
+                            <button type="button" onclick="generateKMeansData()">Gerar novos dados</button>
+                        </div>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card" id="neural-network">
+                <div class="card-header">
+                    <h3>🧠 Rede Neural</h3>
+                    <span class="tag">Com gabarito · reconhece padrões</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/05-rede-neural.jpg">
+                    <source src="videos/05-rede-neural.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Inspirada no cérebro: vários "neurônios" em camadas passam o sinal adiante. Cada camada percebe algo um pouco mais complexo que a anterior.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Gato ou cachorro?</strong></p>
+                    <ul>
+                        <li>Entrada: os pixels da foto</li>
+                        <li>Camadas do meio: bordas, formas, orelhas, focinho</li>
+                        <li>Saída: "gato: 94%"</li>
+                    </ul>
+                    <p>Quando erra, ela ajusta as conexões. Depois de milhares de fotos, passa a acertar.</p>
+                    <h4>Onde aparece</h4>
+                    <ul>
+                        <li>Reconhecer rostos, fala, textos e imagens; assistentes de IA</li>
+                    </ul>
+                </div>
+                <details class="play">
+                    <summary>Experimente: animar o sinal</summary>
+                    <div class="visualization">
+                        <div id="neuralNetworkViz"></div>
+                        <button type="button" onclick="animateNeuralNetwork()">Animar propagação</button>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card" id="random-forest">
+                <div class="card-header">
+                    <h3>🌲 Random Forest</h3>
+                    <span class="tag">Com gabarito · várias árvores votam</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/06-random-forest.jpg">
+                    <source src="videos/06-random-forest.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Em vez de uma árvore de decisão, usa muitas. Cada uma aprende com uma parte diferente dos dados e dá seu voto. Vence a maioria.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Gripe ou resfriado?</strong> Três árvores olham os sintomas do paciente: duas votam "gripe" e uma "resfriado". Resultado: gripe. (Na prática, usam-se dezenas ou centenas de árvores.)</p>
+                    <p>É como pedir a opinião de várias pessoas em vez de uma só: juntas, erram menos.</p>
+                </div>
+                <details class="play">
+                    <summary>Experimente: gerar outra floresta</summary>
+                    <div class="visualization">
+                        <div id="randomForestViz"></div>
+                        <button type="button" onclick="generateRandomForest()">Gerar nova floresta</button>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card" id="gradient-boosting">
+                <div class="card-header">
+                    <h3>🚀 Gradient Boosting</h3>
+                    <span class="tag">Com gabarito · aprende com os próprios erros</span>
+                </div>
+                <video class="clip" controls playsinline muted preload="none" poster="videos/07-gradient-boosting.jpg">
+                    <source src="videos/07-gradient-boosting.mp4" type="video/mp4">
+                </video>
+                <div class="text">
+                    <h4>Em poucas palavras</h4>
+                    <p>Monta árvores pequenas, uma depois da outra. Cada nova árvore aprende só o erro que a anterior deixou, como um estudante que revisa a prova e melhora a nota.</p>
+                    <h4>Exemplo do dia a dia</h4>
+                    <p><strong>Preço de um apartamento</strong> (70 m², 2 quartos, perto do metrô), que na verdade vale R$ 400 mil:</p>
+                    <ul>
+                        <li>Árvore 1: palpite de R$ 300 mil (faltam R$ 100 mil)</li>
+                        <li>Árvore 2: aprende esse erro e soma R$ 70 mil (faltam R$ 30 mil)</li>
+                        <li>Árvore 3: soma mais R$ 25 mil. Total: R$ 395 mil, quase o preço real</li>
+                    </ul>
+                    <h4>Onde aparece</h4>
+                    <ul>
+                        <li>Previsão de vendas, preços e risco de crédito; competições de dados</li>
+                    </ul>
+                </div>
+                <details class="play">
+                    <summary>Experimente: treinar um modelo</summary>
+                    <div class="visualization">
+                        <div id="gradientBoostingViz"></div>
+                        <button type="button" onclick="generateGradientBoosting()">Treinar novo modelo</button>
+                    </div>
+                </details>
+            </article>
+        </section>
+
+        <section id="comparison" class="comparison-section">
+            <h2>Comparando</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Algoritmo</th>
+                            <th>Gabarito?</th>
+                            <th>Fácil de entender</th>
+                            <th>Rapidez</th>
+                            <th>Acerto</th>
+                            <th>Bom para</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Regressão Linear</td><td>Com</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>Prever números simples</td></tr>
+                        <tr><td>Regressão Logística</td><td>Com</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>Sim ou não, com a chance</td></tr>
+                        <tr><td>Árvore de Decisão</td><td>Com</td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐</td><td>Explicar o porquê</td></tr>
+                        <tr><td>K-Means</td><td>Sem</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>Achar grupos</td></tr>
+                        <tr><td>Rede Neural</td><td>Com</td><td>⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>Imagens, fala, texto</td></tr>
+                        <tr><td>Random Forest</td><td>Com</td><td>⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>Acertar mais, com votação</td></tr>
+                        <tr><td>Gradient Boosting</td><td>Com</td><td>⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐⭐</td><td>Máximo acerto</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="hint">No celular, arraste a tabela para o lado.</p>
+        </section>
+
+        <section id="resources" class="resources-section">
+            <h2>Para ir além</h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <h3>🛠️ Teste sem programar</h3>
+                    <ul>
+                        <li><a href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Teachable Machine (Google)</a>: ensine o computador com a câmera</li>
+                        <li><a href="https://playground.tensorflow.org/" target="_blank" rel="noopener">TensorFlow Playground</a>: brinque com uma rede neural</li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h3>📚 Para estudar</h3>
+                    <ul>
+                        <li><a href="https://www.kaggle.com/learn" target="_blank" rel="noopener">Kaggle Learn</a></li>
+                        <li><a href="https://scikit-learn.org/" target="_blank" rel="noopener">Scikit-learn (Python)</a></li>
+                        <li><a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="noopener">Curso de ML – Coursera</a></li>
+                    </ul>
+                </div>
+                <div class="resource-card">
+                    <h3>📊 Dados para praticar</h3>
+                    <ul>
+                        <li><a href="https://www.kaggle.com/datasets" target="_blank" rel="noopener">Kaggle Datasets</a></li>
+                        <li><a href="https://archive.ics.uci.edu/" target="_blank" rel="noopener">UCI ML Repository</a></li>
+                        <li><a href="https://datasetsearch.research.google.com/" target="_blank" rel="noopener">Google Dataset Search</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Atividade extensionista – Alexandre de Sales Santos – ADS, Centro Universitário Sumaré · Publicado gratuitamente pela ALX DataLabs</p>
+    </footer>
+
+    <script>
+        // Celular: gráficos do tamanho da tela (sem encolher por CSS) e textos maiores.
+        if (window.Chart && window.matchMedia("(max-width: 768px)").matches) {
+            Chart.defaults.font.size = 15;
+            Chart.defaults.plugins.title.font = { size: 17, weight: "bold" };
+            Chart.defaults.plugins.legend.labels.boxWidth = 16;
+            document.querySelectorAll(".visualization canvas").forEach(function (c) {
+                c.width = 320;
+                c.height = 320;
+            });
+        }
+    </script>
+    <script src="script.js"></script>
+
+    <!-- Contador de visitas (GoatCounter, gratuito e sem cookies).
+         Único lugar para configurar: troque SEU-CODIGO no atributo data-goatcounter abaixo.
+         Enquanto estiver SEU-CODIGO, nada é carregado; se o contador falhar, o site segue normal. -->
+    <script id="goatcounter-config" data-goatcounter="https://SEU-CODIGO.goatcounter.com/count">
+        (function () {
+            var url = document.getElementById("goatcounter-config").getAttribute("data-goatcounter");
+            if (!url || url.indexOf("SEU-CODIGO") !== -1) return;
+            var s = document.createElement("script");
+            s.async = true;
+            s.src = "https://gc.zgo.at/count.js";
+            s.setAttribute("data-goatcounter", url);
+            document.body.appendChild(s);
+        })();
+    </script>
+</body>
+</html>
+

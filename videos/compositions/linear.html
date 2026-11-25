@@ -1,0 +1,119 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 340px; font-weight: 900; font-size: 136px; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 510px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 60px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    .tick { font-size: 50px; font-weight: 700; fill: #3a3d42; font-family: "Inter", sans-serif; }
+    .axl { font-size: 52px; fill: #121417; font-weight: 700; font-family: "Inter", sans-serif; }
+    #lr-axes-labels, #lr-line, #lr-new, #lr-vline, #lr-hline, #lr-hit, #lr-price { opacity: 0; }
+    #lr-price { position: absolute; left: 290px; top: 462px; font-weight: 900; font-size: 68px; letter-spacing: -0.02em; color: #e0640f; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="linear" data-width="1920" data-height="1080">
+    <svg class="stage" id="lr-svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <path id="lr-axes" d="M260 280 V900 H1720" fill="none" stroke="#121417" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+      <g id="lr-axes-labels">
+        <text class="tick" x="500" y="958" text-anchor="middle">50</text>
+        <text class="tick" x="1100" y="958" text-anchor="middle">100</text>
+        <text class="tick" x="1700" y="958" text-anchor="middle">150</text>
+        <text class="tick" x="236" y="711" text-anchor="end">200</text>
+        <text class="tick" x="236" y="505" text-anchor="end">400</text>
+        <text class="tick" x="236" y="298" text-anchor="end">600</text>
+        <text class="axl" x="1720" y="868" text-anchor="end">Tamanho da casa (m²)</text>
+        <text class="axl" x="282" y="256">Preço (R$ mil)</text>
+      </g>
+      <g id="lr-res"></g>
+      <line id="lr-line" x1="260" y1="590" x2="1700" y2="590" stroke="#2f6fed" stroke-width="8" stroke-linecap="round" />
+      <g id="lr-houses"></g>
+      <line id="lr-vline" x1="920" y1="900" x2="920" y2="570" stroke="#e0640f" stroke-width="4" stroke-dasharray="12 10" />
+      <line id="lr-hline" x1="920" y1="570" x2="262" y2="570" stroke="#e0640f" stroke-width="4" stroke-dasharray="12 10" />
+      <circle id="lr-hit" cx="920" cy="570" r="12" fill="#e0640f" />
+      <g transform="translate(920 900)"><g id="lr-new"><polygon points="-20,0 -20,-24 0,-42 20,-24 20,0" fill="#e0640f" /></g></g>
+    </svg>
+    <div id="lr-price">≈ R$ 320 mil</div>
+    <div id="lr-title" class="title" data-split="lr">Regressão Linear</div>
+    <div id="lr-sub" class="sub" data-split="lr">Prever um número a partir de exemplos</div>
+    <div id="lr-c1" class="cap" data-split="lr">Cada casinha é uma venda: tamanho e preço</div>
+    <div id="lr-c2" class="cap" data-split="lr">O computador chuta uma linha e mede o erro</div>
+    <div id="lr-c3" class="cap" data-split="lr">Depois ajusta a linha até errar o mínimo</div>
+    <div id="lr-c4" class="cap" data-split="lr">Casa nova de 85 m²: quanto ela vale?</div>
+    <div id="lr-c5" class="cap" data-split="lr">Regressão Linear: uma linha que prevê números</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="lr"]').forEach(function (el) {
+        el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+      });
+      var NS = "http://www.w3.org/2000/svg";
+      var X = function (s) { return 260 + (s - 30) * (1440 / 120); };
+      var Y = function (p) { return 900 - p * (620 / 600); };
+      var fit = function (s) { return 3.4 * s + 30; };
+      var data = [[40, 170], [50, 190], [60, 235], [70, 260], [80, 290], [90, 330], [100, 365], [110, 385], [120, 440], [130, 470]];
+      var houses = document.getElementById("lr-houses");
+      var res = document.getElementById("lr-res");
+      data.forEach(function (d, i) {
+        var x = X(d[0]), y = Y(d[1]);
+        var outer = document.createElementNS(NS, "g");
+        outer.setAttribute("transform", "translate(" + x + " " + (y + 22) + ")");
+        var inner = document.createElementNS(NS, "g");
+        inner.setAttribute("id", "lr-h" + i);
+        inner.setAttribute("class", "lr-house");
+        inner.setAttribute("opacity", "0");
+        inner.innerHTML = '<polygon points="-22,0 -22,-26 0,-45 22,-26 22,0" fill="#121417" />';
+        outer.appendChild(inner);
+        houses.appendChild(outer);
+        var r = document.createElementNS(NS, "line");
+        r.setAttribute("id", "lr-r" + i);
+        r.setAttribute("class", "lr-r");
+        r.setAttribute("x1", x); r.setAttribute("x2", x);
+        r.setAttribute("y1", y); r.setAttribute("y2", 590);
+        r.setAttribute("stroke", "#d93636"); r.setAttribute("stroke-width", "4");
+        r.setAttribute("opacity", "0");
+        res.appendChild(r);
+      });
+
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.07 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+
+      inW("#lr-title", 0.15);
+      inW("#lr-sub", 0.7);
+      out("#lr-title, #lr-sub", 3.0);
+
+      inW("#lr-c1", 3.3);
+      F("#lr-axes", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 3.4);
+      F("#lr-axes-labels", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 4.0);
+      F(".lr-house", { opacity: 0, y: -60 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", stagger: 0.14 }, 4.3);
+      out("#lr-c1", 7.2);
+
+      inW("#lr-c2", 7.4);
+      F("#lr-line", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 7.7);
+      F(".lr-r", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out", stagger: 0.06 }, 8.4);
+      out("#lr-c2", 10.4);
+
+      inW("#lr-c3", 10.6);
+      F("#lr-line", { attr: { y1: 590, y2: 590 } }, { attr: { y1: Y(fit(30)), y2: Y(fit(150)) }, duration: 1.8, ease: "power2.inOut" }, 11.0);
+      data.forEach(function (d, i) {
+        F("#lr-r" + i, { attr: { y2: 590 } }, { attr: { y2: Y(fit(d[0])) }, duration: 1.8, ease: "power2.inOut" }, 11.0);
+      });
+      out("#lr-c3", 13.6);
+
+      inW("#lr-c4", 13.8);
+      F(".lr-r", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "power1.in" }, 13.8);
+      F("#lr-new", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 14.3);
+      F("#lr-vline", { opacity: 0, attr: { y2: 900 } }, { opacity: 1, attr: { y2: 570 }, duration: 0.7, ease: "power2.inOut" }, 15.0);
+      F("#lr-hit", { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 15.6);
+      F("#lr-hline", { opacity: 0, attr: { x2: 920 } }, { opacity: 1, attr: { x2: 262 }, duration: 0.7, ease: "power2.inOut" }, 15.9);
+      F("#lr-price", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 16.6);
+      out("#lr-c4", 19.0);
+
+      inW("#lr-c5", 19.2);
+      window.__timelines["linear"] = tl;
+    })();
+  </script>
+</template>
+
+

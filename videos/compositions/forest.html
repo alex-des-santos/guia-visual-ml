@@ -1,0 +1,122 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 340px; font-weight: 900; font-size: 136px; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 510px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 64px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    #rf-card { position: absolute; left: 160px; top: 270px; width: 400px; padding: 30px 34px; background: #fff; border: 5px solid #121417; border-radius: 20px; opacity: 0; }
+    #rf-card .h { font-weight: 900; font-size: 56px; line-height: 1.1; margin-bottom: 14px; }
+    #rf-card .l { font-weight: 700; font-size: 50px; line-height: 1.3; white-space: nowrap; }
+    .chip { position: absolute; width: 300px; height: 96px; margin: -48px 0 0 -150px; border-radius: 18px; color: #fff; font-weight: 900; font-size: 52px; display: flex; align-items: center; justify-content: center; opacity: 0; }
+    .gripe { background: #2f6fed; }
+    .resf { background: #d4570a; }
+    .bl { font-size: 64px; font-weight: 900; font-family: "Inter", sans-serif; }
+    #rf-bins, #rf-win { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="forest" data-width="1920" data-height="1080">
+    <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <g id="rf-trees"></g>
+      <g id="rf-bins">
+        <text class="bl" x="940" y="780" text-anchor="middle" fill="#2f6fed">Gripe: 2 votos</text>
+        <text class="bl" x="1520" y="780" text-anchor="middle" fill="#d4570a">Resfriado: 1</text>
+      </g>
+      <rect id="rf-win" x="600" y="700" width="680" height="250" rx="26" fill="none" stroke="#2f6fed" stroke-width="8" />
+    </svg>
+    <div id="rf-card">
+      <div class="h">Paciente</div>
+      <div class="l">febre alta</div>
+      <div class="l">dor no corpo</div>
+      <div class="l">tosse leve</div>
+    </div>
+    <div id="rf-v0" class="chip gripe" style="left:820px; top:640px">Gripe</div>
+    <div id="rf-v1" class="chip resf" style="left:1180px; top:640px">Resfriado</div>
+    <div id="rf-v2" class="chip gripe" style="left:1540px; top:640px">Gripe</div>
+    <div id="rf-title" class="title" data-split="rf">Random Forest</div>
+    <div id="rf-sub" class="sub" data-split="rf">Várias árvores de decisão fazem uma votação</div>
+    <div id="rf-c1" class="cap" data-split="rf">Um paciente chega com estes sintomas</div>
+    <div id="rf-c2" class="cap" data-split="rf">Três árvores, cada uma treinada com dados diferentes</div>
+    <div id="rf-c3" class="cap" data-split="rf">Cada árvore segue suas perguntas e dá um voto</div>
+    <div id="rf-c4" class="cap" data-split="rf">Contamos os votos</div>
+    <div id="rf-c5" class="cap" data-split="rf">A maioria vence: gripe</div>
+    <div id="rf-c6" class="cap" data-hold data-split="rf">Random Forest: juntas, as árvores erram menos</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="rf"]').forEach(function (el) {
+        el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+      });
+      var xs = [820, 1180, 1540];
+      var leafPick = [0, 3, 1];
+      var gt = document.getElementById("rf-trees");
+      xs.forEach(function (x, t) {
+        var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("id", "rf-t" + t);
+        var nodes = [[x, 290], [x - 80, 410], [x + 80, 410], [x - 125, 530], [x - 42, 530], [x + 42, 530], [x + 125, 530]];
+        var edges = [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]];
+        var leaf = 3 + leafPick[t];
+        var mid = leaf <= 4 ? 1 : 2;
+        var html = "";
+        edges.forEach(function (e) {
+          var hotE = (e[0] === 0 && e[1] === mid) || (e[0] === mid && e[1] === leaf);
+          html += '<path class="rf-e rf-e' + t + (hotE ? " rf-h" + t : "") + '" d="M' + nodes[e[0]][0] + " " + nodes[e[0]][1] + " L" + nodes[e[1]][0] + " " + nodes[e[1]][1] + '" stroke="#121417" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />';
+        });
+        nodes.forEach(function (n, i) {
+          var hotN = i === 0 || i === mid || i === leaf;
+          html += '<circle class="rf-n rf-n' + t + (hotN ? " rf-hn" + t : "") + '" cx="' + n[0] + '" cy="' + n[1] + '" r="' + (i < 3 ? 30 : 24) + '" style="fill:#1f9d55; opacity:0" />';
+        });
+        g.innerHTML = html;
+        gt.appendChild(g);
+      });
+
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.07 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+
+      inW("#rf-title", 0.15);
+      inW("#rf-sub", 0.7);
+      out("#rf-title, #rf-sub", 3.0);
+
+      inW("#rf-c1", 3.3);
+      F("#rf-card", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 3.6);
+      out("#rf-c1", 6.0);
+
+      inW("#rf-c2", 6.2);
+      xs.forEach(function (x, t) {
+        var at = 6.6 + t * 0.35;
+        F(".rf-e" + t, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, at);
+        F(".rf-n" + t, { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", stagger: 0.04 }, at + 0.1);
+      });
+      out("#rf-c2", 9.4);
+
+      inW("#rf-c3", 9.6);
+      var tallyX = [780, 1520, 1100];
+      xs.forEach(function (x, t) {
+        var at = 10.1 + t * 0.7;
+        F(".rf-h" + t, { stroke: "#121417", strokeWidth: 8 }, { stroke: "#e0640f", strokeWidth: 14, duration: 0.3, ease: "power2.out" }, at);
+        F(".rf-hn" + t, { fill: "#1f9d55" }, { fill: "#e0640f", duration: 0.3, ease: "power2.out", stagger: 0.1 }, at);
+        F("#rf-v" + t, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + 0.4);
+      });
+      out("#rf-c3", 13.0);
+
+      inW("#rf-c4", 13.2);
+      xs.forEach(function (x, t) {
+        F("#rf-v" + t, { x: 0, y: 0 }, { x: tallyX[t] - x, y: 220, duration: 0.8, ease: "power3.inOut" }, 13.6 + t * 0.3);
+      });
+      F("#rf-bins", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 15.2);
+      out("#rf-c4", 16.4);
+
+      inW("#rf-c5", 16.6);
+      F("#rf-win", { opacity: 0, scale: 0.92, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 17.0);
+      F("#rf-v1", { opacity: 1 }, { opacity: 0.45, duration: 0.4, ease: "power1.out" }, 17.0);
+      out("#rf-c5", 19.6);
+
+      inW("#rf-c6", 19.8);
+      window.__timelines["forest"] = tl;
+    })();
+  </script>
+</template>
+
+

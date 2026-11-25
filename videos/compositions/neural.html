@@ -1,0 +1,146 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #f6f4ef; font-family: "Inter", sans-serif; color: #121417; overflow: hidden; }
+    .title { position: absolute; left: 192px; top: 340px; font-weight: 900; font-size: 136px; line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+    .sub { position: absolute; left: 196px; top: 510px; font-weight: 400; font-size: 52px; line-height: 1.2; color: #5b5f66; white-space: nowrap; }
+    .cap { position: absolute; left: 160px; top: 104px; width: 1600px; font-weight: 700; font-size: 60px; line-height: 1.1; letter-spacing: -0.015em; }
+    .w { display: inline-block; opacity: 0; }
+    .stage { position: absolute; inset: 0; }
+    .ll { font-size: 50px; fill: #3a3d42; font-weight: 700; font-family: "Inter", sans-serif; }
+    .ol { font-size: 48px; fill: #121417; font-weight: 900; font-family: "Inter", sans-serif; }
+    #nn-card, #nn-grid, #nn-arrow, #nn-llabs, #nn-outs { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="neural" data-width="1920" data-height="1080">
+    <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <g id="nn-card">
+        <rect x="160" y="330" width="380" height="380" rx="22" fill="#ffffff" stroke="#121417" stroke-width="4" />
+        <polygon points="262,470 280,365 335,440" fill="#e0a15a" stroke="#121417" stroke-width="5" stroke-linejoin="round" />
+        <polygon points="438,470 420,365 365,440" fill="#e0a15a" stroke="#121417" stroke-width="5" stroke-linejoin="round" />
+        <circle cx="350" cy="540" r="112" fill="#e0a15a" stroke="#121417" stroke-width="5" />
+        <ellipse cx="308" cy="520" rx="13" ry="19" fill="#121417" />
+        <ellipse cx="392" cy="520" rx="13" ry="19" fill="#121417" />
+        <polygon points="338,565 362,565 350,580" fill="#d93636" />
+        <path d="M350 580 Q338 600 322 596 M350 580 Q362 600 378 596" fill="none" stroke="#121417" stroke-width="4" stroke-linecap="round" />
+        <path d="M300 575 L215 560 M300 588 L215 595 M400 575 L485 560 M400 588 L485 595" stroke="#121417" stroke-width="4" stroke-linecap="round" />
+      </g>
+      <g id="nn-grid" stroke="#2f6fed" stroke-width="2" opacity="0">
+        <path d="M200 330 V710 M240 330 V710 M280 330 V710 M320 330 V710 M360 330 V710 M400 330 V710 M440 330 V710 M480 330 V710 M520 330 V710 M160 370 H540 M160 410 H540 M160 450 H540 M160 490 H540 M160 530 H540 M160 570 H540 M160 610 H540 M160 650 H540 M160 690 H540" />
+      </g>
+      <path id="nn-arrow" d="M558 520 H598 M580 500 L601 520 L580 540" fill="none" stroke="#121417" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+      <g id="nn-lines" stroke="#c8cbd0" stroke-width="3"></g>
+      <g id="nn-nodes"></g>
+      <g id="nn-llabs">
+        <text class="ll" x="640" y="920" text-anchor="middle">pixels</text>
+        <text class="ll" x="880" y="920" text-anchor="middle">bordas</text>
+        <text class="ll" x="1120" y="920" text-anchor="middle">formas</text>
+        <text class="ll" x="1360" y="920" text-anchor="middle">resposta</text>
+      </g>
+      <g id="nn-outs">
+        <text class="ol" x="1410" y="470">Gato 94%</text>
+        <rect x="1410" y="490" width="300" height="20" rx="10" fill="#e3e4e6" />
+        <rect id="nn-bar0" x="1410" y="490" width="282" height="20" rx="10" fill="#2f6fed" />
+        <text class="ol" x="1410" y="670" fill="#3a3d42">Cachorro 6%</text>
+        <rect x="1410" y="690" width="300" height="20" rx="10" fill="#e3e4e6" />
+        <rect id="nn-bar1" x="1410" y="690" width="12" height="20" rx="10" fill="#a3a7ad" />
+      </g>
+    </svg>
+    <div id="nn-title" class="title" data-split="nn">Rede Neural</div>
+    <div id="nn-sub" class="sub" data-split="nn">Aprender a reconhecer o que tem numa foto</div>
+    <div id="nn-c1" class="cap" data-split="nn">Uma foto vira números: os pixels</div>
+    <div id="nn-c2" class="cap" data-split="nn">Neurônios em camadas passam o sinal adiante</div>
+    <div id="nn-c3" class="cap" data-split="nn">Resposta: é um gato!</div>
+    <div id="nn-c4" class="cap" data-split="nn">Quando erra, ela ajusta as conexões e tenta de novo</div>
+    <div id="nn-c5" class="cap" data-split="nn">Rede Neural: aprende padrões com muitos exemplos</div>
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('[data-split="nn"]').forEach(function (el) {
+        el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+      });
+      var NS = "http://www.w3.org/2000/svg";
+      var layers = [
+        { x: 640, ys: [320, 420, 520, 620, 720] },
+        { x: 880, ys: [270, 370, 470, 570, 670, 770] },
+        { x: 1120, ys: [320, 420, 520, 620, 720] },
+        { x: 1360, ys: [470, 670] }
+      ];
+      var gl = document.getElementById("nn-lines"), gn = document.getElementById("nn-nodes");
+      var lineIdx = 0;
+      for (var l = 0; l < 3; l++) {
+        layers[l].ys.forEach(function (ya) {
+          layers[l + 1].ys.forEach(function (yb) {
+            var ln = document.createElementNS(NS, "line");
+            ln.setAttribute("x1", layers[l].x); ln.setAttribute("y1", ya);
+            ln.setAttribute("x2", layers[l + 1].x); ln.setAttribute("y2", yb);
+            ln.setAttribute("id", "nn-ln" + lineIdx);
+            ln.setAttribute("class", "nn-ln nn-L" + (l + 1) + (lineIdx % 3 === 0 ? " nn-thick" : (lineIdx % 3 === 1 ? " nn-thin" : "")));
+            ln.setAttribute("style", "opacity:0");
+            gl.appendChild(ln);
+            lineIdx++;
+          });
+        });
+      }
+      layers.forEach(function (ly, l) {
+        ly.ys.forEach(function (y, i) {
+          var c = document.createElementNS(NS, "circle");
+          c.setAttribute("cx", ly.x); c.setAttribute("cy", y); c.setAttribute("r", 26);
+          c.setAttribute("id", "nn-n" + l + "-" + i);
+          c.setAttribute("class", "nn-n nn-n" + l);
+          c.setAttribute("style", "fill:#ffffff; stroke:#121417; stroke-width:5; opacity:0");
+          gn.appendChild(c);
+        });
+      });
+
+      var tl = gsap.timeline({ paused: true });
+      var F = function (t, f, to, at) { return tl.fromTo(t, f, Object.assign({ immediateRender: false }, to), at); };
+      var inW = function (sel, at) { return F(sel + " .w", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.07 }, at); };
+      var out = function (sel, at) { return F(sel, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, at); };
+      var fade = function (sel, at, dur) { return F(sel, { opacity: 0 }, { opacity: 1, duration: dur || 0.3, ease: "power1.out" }, at); };
+      var litN = function (sel, at, col) { return F(sel, { fill: "#ffffff" }, { fill: col || "#2f6fed", duration: 0.3, ease: "power2.out", stagger: 0.05 }, at); };
+      var litL = function (sel, at) { return F(sel, { stroke: "#c8cbd0" }, { stroke: "#2f6fed", duration: 0.35, ease: "power1.out", stagger: 0.008 }, at); };
+
+      inW("#nn-title", 0.15);
+      inW("#nn-sub", 0.7);
+      out("#nn-title, #nn-sub", 3.0);
+
+      inW("#nn-c1", 3.3);
+      F("#nn-card", { opacity: 0, scale: 0.85, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, 3.6);
+      F("#nn-grid", { opacity: 0 }, { opacity: 0.55, duration: 0.5, ease: "power1.out" }, 4.8);
+      fade("#nn-arrow", 5.6);
+      out("#nn-c1", 6.6);
+
+      inW("#nn-c2", 6.8);
+      for (var k = 0; k < 4; k++) {
+        F(".nn-n" + k, { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.05 }, 7.1 + k * 0.3);
+      }
+      F(".nn-ln", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out", stagger: 0.008 }, 7.5);
+      fade("#nn-llabs", 8.6, 0.4);
+
+      litN(".nn-n0", 9.8);
+      litL(".nn-L1", 10.2);
+      litN(".nn-n1", 10.7);
+      litL(".nn-L2", 11.1);
+      litN(".nn-n2", 11.6);
+      litL(".nn-L3", 12.0);
+      litN("#nn-n3-0", 12.5);
+      out("#nn-c2", 13.2);
+
+      inW("#nn-c3", 13.4);
+      fade("#nn-outs", 13.6);
+      F("#nn-bar0", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 13.8);
+      F("#nn-bar1", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 13.8);
+      out("#nn-c3", 16.4);
+
+      inW("#nn-c4", 16.6);
+      F(".nn-thick", { strokeWidth: 3 }, { strokeWidth: 9, duration: 1.0, ease: "power2.inOut", stagger: 0.01 }, 17.3);
+      F(".nn-thin", { strokeWidth: 3 }, { strokeWidth: 1, duration: 1.0, ease: "power2.inOut", stagger: 0.01 }, 17.3);
+      out("#nn-c4", 20.2);
+
+      inW("#nn-c5", 20.4);
+      window.__timelines["neural"] = tl;
+    })();
+  </script>
+</template>
+
+
+
