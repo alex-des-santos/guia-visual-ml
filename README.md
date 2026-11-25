@@ -1,6 +1,12 @@
 # O que é Machine Learning? – vídeos + site
 
-Material da oficina extensionista (público leigo). Duas partes:
+Material da oficina extensionista (público leigo).
+
+- Site publicado: https://alex-des-santos.github.io/guia-visual-ml/
+- Repositório: https://github.com/alex-des-santos/guia-visual-ml
+- QR code do site: `qrcode-site.png` (fica só na pasta local, fora do repositório).
+
+Duas partes:
 
 - `videos/` – projeto HyperFrames com 8 vídeos (abertura + 7 algoritmos), 1920×1080, 30 fps, sem som (a narração é ao vivo, na palestra).
 - `site/` – site estático com os vídeos embutidos, pronto para GitHub Pages (sem backend).
@@ -71,6 +77,8 @@ Também dá para abrir `site/index.html` com dois cliques; só os gráficos inte
 
 ### Publicar no GitHub Pages
 
+Já publicado com a opção B (GitHub Actions). Para atualizar: faça commit e `git push` na `main`; o workflow publica sozinho em 1–2 minutos.
+
 Opção A – repositório só com o site (mais simples):
 
 1. Crie um repositório no GitHub (ex.: `ml-extensao`).
@@ -90,3 +98,4 @@ O site conta visitas com o [GoatCounter](https://www.goatcounter.com): gratuito 
 2. Em `site/index.html`, no fim do arquivo, troque `SEU-CODIGO` pelo seu código no atributo `data-goatcounter` (é o único lugar): `data-goatcounter="https://<código>.goatcounter.com/count"`.
 3. Publique o site de novo (commit/push). Visitas feitas em `localhost` não são contadas.
 4. Para o relatório, entre em `https://<código>.goatcounter.com`: o painel mostra visitantes e visualizações por período. Escolha as datas da atividade e use o número de visitantes como "pessoas impactadas" (é uma estimativa: a mesma pessoa em outro aparelho conta duas vezes).
+
