@@ -90,12 +90,3 @@ Opção B – repositório com a pasta inteira (`videos/` + `site/`): o workflow
 
 O arquivo `site/.nojekyll` evita que o GitHub processe o site com Jekyll.
 
-## Contador de visitas (GoatCounter)
-
-O site conta visitas com o [GoatCounter](https://www.goatcounter.com): gratuito para uso não comercial e sem cookies. Enquanto o código não for trocado, o contador não carrega, e o site funciona igual se o contador falhar.
-
-1. Crie uma conta gratuita em https://www.goatcounter.com/signup. O "código" que você escolher vira o endereço do painel: `https://<código>.goatcounter.com`.
-2. Em `site/index.html`, no fim do arquivo, troque `SEU-CODIGO` pelo seu código no atributo `data-goatcounter` (é o único lugar): `data-goatcounter="https://<código>.goatcounter.com/count"`.
-3. Publique o site de novo (commit/push). Visitas feitas em `localhost` não são contadas.
-4. Para o relatório, entre em `https://<código>.goatcounter.com`: o painel mostra visitantes e visualizações por período. Escolha as datas da atividade e use o número de visitantes como "pessoas impactadas" (é uma estimativa: a mesma pessoa em outro aparelho conta duas vezes).
-
